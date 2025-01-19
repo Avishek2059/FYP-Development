@@ -11,6 +11,10 @@
 # install dependicies as
 #>> pip install -r requirement.txt
 
+# git repository
+#>> git commit -m "commit message"
+#>> git push origin master
+
 # steup files
 #>> python template.py
 
