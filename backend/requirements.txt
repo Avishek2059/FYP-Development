@@ -1,0 +1,27 @@
+# Create a virtual environment
+# for python
+#python -m venv venv
+#source venv/bin/activate
+
+# for windows
+#>> python -m venv ./venv
+# Activate the virtual environment
+#>> .\venv\Scripts\activate
+
+# install dependicies as
+#>> pip install -r requirement.txt
+
+# steup files
+#>> python template.py
+
+# Install required dependencies
+Flask
+Flask-JWT-Extended
+Flask-Bcrypt
+Flask-SQLAlchemy
+mysqlclient
+flask-marshmallow
+marshmallow-sqlalchemy
+python-dotenv
+setuptools
+Flask-Cors
