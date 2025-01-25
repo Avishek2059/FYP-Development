@@ -57,8 +57,8 @@ def register():
     username = data['username']
     password = data['password']
 
-    if Users.query.filter_by(email=email).first() or Users.query.filter_by(username=username).first():
-        return jsonify(message="Email or username already taken"), 400
+    if Users.query.filter_by(username=username).first():
+        return jsonify(message="username already taken"), 400
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = Users(fullName=fullName, email=email, phone=phone, username=username, password=hashed_password)
@@ -70,15 +70,15 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data['email']
+    username = data['username']
     password = data['password']
 
-    user = Users.query.filter_by(email=email).first()
+    user = Users.query.filter_by(username=username).first()
 
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify(message="Invalid credentials"), 401
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.username)
     return jsonify(access_token=access_token), 200
 
 # Protected route
@@ -91,4 +91,4 @@ def protected():
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5005, debug=True)
+    app.run(host= '192.168.101.17', port=5005, debug=True)

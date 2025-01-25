@@ -1,29 +1,24 @@
-import React, { useState } from 'react'
-//import Logo from '../components/Logo'
-import Header from '../components/Header'
-//import Button from '../components/Button'
+import React, { useState } from 'react';
+import Header from '../components/Header';
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { useForm, Controller } from "react-hook-form";
 import Toast from 'react-native-toast-message'; // Assuming you have Toast imported
-import AsyncStorage from '@react-native-async-storage/async-storage';
-//import { useRouter } from 'next/router'; // If you're using Next.js for navigation
-//import { useNavigation } from '@react-navigation/native';
 
-const API_URL = 'http://100.64.217.29:5005/register'; // Replace with your actual backend URL register
+
+// Backend API URL
+const API_URL = 'http://192.168.101.17:5005/register'; // Replace with your actual backend URL register
+
 
 export default function MFACreateAccount({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading,setLoading] = useState(false);
-  const showToast = (message) => {
+  const showToast = (message, type = 'error') => {
     Toast.show({
-      type: 'error',
+      type, // 'success' or 'error'
       text2: message,
       position: 'top',
     });
   };
-
-  //const router = useRouter();
-  //const navigation = useNavigation();
 
   const {
     control,
@@ -40,7 +35,6 @@ export default function MFACreateAccount({ navigation }) {
   }); // Initialize useForm
 
 
-  // filepath: /d:/FYP Development/FYP Development/MyFinancialAdvisor/Source/screens/MFACreateAccount.js
     const handleCreatingAccount = async (reqdata) => {
       setLoading(true);
       console.log(reqdata);
@@ -53,14 +47,17 @@ export default function MFACreateAccount({ navigation }) {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify(reqdata),
-          });
+           });
           const data = await response.json();
-          if (response.ok) {
-              showToast('User registered successfully');
-              navigation.replace('/login'); // Navigate to th
-              // e login page
+
+          if (response.ok && data.message.includes("success")) {
+             // Success case
+            showToast("Account created successfully!", "success");
+            navigation.replace('MFALoginScreen'); // Navigate to the login page
           } else {
-              showToast(data.message || "An error occurred");
+            // Handle server errors or validation errors
+            console.error(data.message);
+            showToast(data.message || "An error occurred");
           }
       } catch (error) {
           showToast(error.message || "Network error");
@@ -267,15 +264,7 @@ export default function MFACreateAccount({ navigation }) {
   </TouchableOpacity>
 </View>
 
-      
-
-    {/* <Button
-    title={loading ? "Creating Account..." : "Create Account"}
-    style={styles.button}
-    mode="contained"
-    onPress={handleSubmit(handleCreatingAccount)} // Handle form submission
-    disabled={loading}
-    />  */}
+    {/* Create Account Button */}
     <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit(handleCreatingAccount)} // Handle form submission
@@ -285,7 +274,6 @@ export default function MFACreateAccount({ navigation }) {
             {loading ? "Creating Account..." : "Create Account"}
           </Text>
         </TouchableOpacity>
-    {/* </Button> */}
 
     
   </View>
