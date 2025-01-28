@@ -372,7 +372,9 @@ export default function MFAUserDashboard({route, navigation}) {
 
                 {/* Elevated Camera Button */}
                 <View style={styles.cameraButtonContainer}>
-                  <TouchableOpacity style={styles.cameraButton}>
+                  <TouchableOpacity style={styles.cameraButton}
+                    onPress={() => navigation.navigate('AddExpensesAndIncomesScreen')}
+                  >
                     <Image
                       source={require("../assets/camera.png")} // Replace with your camera icon path
                       style={styles.cameraIcon}

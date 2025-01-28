@@ -12,6 +12,7 @@ import {
   MFACreateAccount,
   MFADashboard,
   MFAUserDashboard,
+  AddExpensesAndIncomesScreen,
   ResetPasswordScreen,
   Dashboard,
 } from './Source/screens'
@@ -36,6 +37,7 @@ export default function App() {
           <Stack.Screen name="MFACreateAccount" component={ MFACreateAccount} />
           <Stack.Screen name="MFADashboard" component={MFADashboard} />
           <Stack.Screen name="MFAUserDashboard" component={MFAUserDashboard} />
+          <Stack.Screen name="AddExpensesAndIncomesScreen" component={AddExpensesAndIncomesScreen} />
           {/* <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}

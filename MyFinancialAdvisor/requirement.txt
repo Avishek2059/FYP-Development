@@ -5,3 +5,4 @@ react-native@0.76.6
 npm install react-hook-form
 react-native-chart-kit
 react-native-svg
+react-native-image-picker
