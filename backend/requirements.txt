@@ -12,6 +12,7 @@
 #>> pip install -r requirement.txt
 
 # git repository
+#>> git add .
 #>> git commit -m "commit message"
 #>> git push -u origin main
 
@@ -29,3 +30,8 @@ marshmallow-sqlalchemy
 python-dotenv
 setuptools
 Flask-Cors
+pillow
+pytesseract
+google-generativeai
+python-dateutil
+mysql-connector-python

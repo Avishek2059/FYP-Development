@@ -4,6 +4,8 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons'; // Using Expo i
 import { LineChart } from 'react-native-chart-kit'; // For the graph
 import Header from "../components/Header";
 import Svg, { Path, Circle, Defs, Filter, FeDropShadow } from "react-native-svg";
+import SqlQuery from "./SqlQuery";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screenWidth = Dimensions.get('window').width;
 const chartHeight = 200;
@@ -59,10 +61,44 @@ const CircularProgressWithImage = ({ progress, color, icon, value, label }) => {
 
 
 
-export default function MFAUserDashboard({route, navigation}) {
+export default function MFAUserDashboard({navigation}) {
 
     const [isSearching, setIsSearching] = useState(false);
     const [searchText, setSearchText] = useState('');
+
+    const [userData, setUserData] = useState({
+      username: '',
+      fullName: '',
+      email: '',
+      phone: ''
+    });
+  
+    // Function to get user data from AsyncStorage
+    const getUserData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('userSession');
+        if (storedData !== null) {
+          // Parse the JSON string back to an object
+          const parsedData = JSON.parse(storedData);
+          setUserData(parsedData);
+        }
+      } catch (error) {
+        console.error('Error retrieving user data:', error);
+      }
+    };
+  
+    // Use useEffect to fetch data when component mounts
+    useEffect(() => {
+      getUserData();
+    }, []);
+
+    const fullName  = userData.fullName; // Destructure fullName from userData
+
+    const getFirstName = (fullName) => {
+      return fullName.split(' ')[0]; // Get first name
+    };
+
+    const firstName = getFirstName(fullName); // Extract first name
 
     // for expenditure section
     const [chartData, setChartData] = useState(null); // State to store backend data
@@ -111,6 +147,9 @@ export default function MFAUserDashboard({route, navigation}) {
               source={require('../assets/Avishek Chaudhary.jpg')}
               style={styles.profileImage}
             />
+            <Text style={[styles.usertitle, { fontSize: 24 }]}>
+              {firstName}
+              </Text>
 
             {/* Middle Space for Search Bar or Empty Space */}
               {isSearching ? (
@@ -299,21 +338,6 @@ export default function MFAUserDashboard({route, navigation}) {
       </View>
       </ScrollView> 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/* Curved Background with Camera Placeholder */}
       <View style={styles.navBarContainer}>
         <Svg
@@ -354,7 +378,9 @@ export default function MFAUserDashboard({route, navigation}) {
                   </TouchableOpacity>
 
                   {/* Barcode Icon */}
-                  <TouchableOpacity style={styles.iconContainer}>
+                  <TouchableOpacity style={styles.iconContainer}
+                    onPress={() => navigation.navigate('SqlQuery')}
+                    >
                     <Image
                       source={require("../assets/query.png")} // Replace with your icon path
                       style={styles.icon}
@@ -578,6 +604,11 @@ const styles = StyleSheet.create({
       height: 90,
       resizeMode: "contain",
       tintColor: "#FFA726", // White color for the camera icon
+    },
+    usertitle:{
+      fontWeight: 'bold',
+      paddingLeft: 12,
+
     },
 
 

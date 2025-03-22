@@ -3,10 +3,16 @@ import Header from '../components/Header';
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { useForm, Controller } from "react-hook-form";
 import Toast from 'react-native-toast-message'; // Assuming you have Toast imported
+import getLocalIP from '../../config';
 
+let API_URL = "";
 
-// Backend API URL
-const API_URL = 'http://192.168.101.17:5005/register'; // Replace with your actual backend URL register
+// Function to set up the API URL
+const setupAPI = async () => {
+  const localIP = await getLocalIP();
+  API_URL = `${localIP}/register`; // Set the global variable
+  console.log("API URL Set:", API_URL);
+};
 
 
 export default function MFACreateAccount({ navigation }) {
@@ -90,11 +96,7 @@ export default function MFACreateAccount({ navigation }) {
     {/* Create Account Button */}
 
     {/* Full Name Input */}
-    {/* <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        placeholderTextColor="#C4C4C4"
-      /> */}
+    
       <View style={styles.inputConatiner}>
         <Controller
           control={control}

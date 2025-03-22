@@ -3,10 +3,20 @@ import Header from '../components/Header'
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { useForm, Controller } from "react-hook-form";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MFAUserDashboard from './MFAUserDashboard';
+//import MFAUserDashboard from './MFAUserDashboard';
+import getLocalIP from '../../config';
 
-// Backend API URL
-const API_URL = 'http://192.168.101.17:5005/login'; // Replace with your actual backend URL register
+let API_URL = "";
+
+// Function to set up the API URL
+const setupAPI = async () => {
+  const localIP = await getLocalIP();
+  API_URL = `${localIP}/login`; // Set the global variable
+  //console.log("API URL Set:", API_URL);
+};
+
+// Call the function once to set the API URL
+setupAPI();
 
 export default function MFALoginScreen({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -56,69 +66,33 @@ export default function MFALoginScreen({ navigation }) {
             body: JSON.stringify(reqdata),
          });
         const data = await response.json();
+        console.log(data);
+        
+        // Check if the response was successful (status 200-299)
+        if (response.ok && data.message === "Login successful") {
+          const { username, fullName, email, phone } = data.user; // Extract all user details
 
-        // if (response.ok && data.message.includes("success")) {
-        //    // Success case
-        //   showToast("Logged in successfully!", "success");
-        //   navigation.replace('MyFinancialAdvisorAccount'); // Navigate to the login page
-        // }
-        if(data.access_token){
-          AsyncStorage.setItem('access_token', data.access_token).then(
-            () => {
-              checkAccessToken();
-              //navigation.replace('MFADashboard');
-            }
+          // Store user session in AsyncStorage
+          await AsyncStorage.setItem(
+            "userSession",
+            JSON.stringify({ username, fullName, email, phone })
           );
-        } else {
-          // Handle server errors or validation errors
-          console.error(data.message);
-          showToast(data.message || "An error occurred");
-        }
-    } catch (error) {
+          // Navigate to dashboard with user data
+          //navigation.replace('MFAUserDashboard', { username, fullName, email, phone });
+          navigation.replace('MFAUserDashboard');
+
+      } else {
+          // Handle error messages from API
+          Alert.alert("Error", data.error || "Email or Password do not match.");
+      }
+  }
+    catch (error) {
         showToast(error.message || "Network error");
         console.error('Error:', error);
     } finally {
         setLoading(false);
     }
   };
-
-  const checkAccessToken = async () => {
-    try {
-      const access_token = await AsyncStorage.getItem('access_token');
-      console.log(access_token);
-      if (!access_token) {
-        // Access token is not present, navigate to login screen
-        navigation.replace('MFALoginScreen');
-        return;
-      }
-
-      const response = await fetch("http://192.168.101.17:5005/protected", {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      });
-
-      if (!response.ok) {
-        navigation.replace('MFALoginScreen');
-      }
-      else
-      {
-        // Access token is valid, display the protected page
-        const data = await response.json();
-        console.log(data);
-        //setResponse(data);
-        navigation.replace('MFADashboard', { userData: data });
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-
-
-  useEffect(() => {
-    //handleSubmitting();
-  }, []);
 
   return (
     <ScrollView>
@@ -240,7 +214,7 @@ export default function MFALoginScreen({ navigation }) {
 
     {/* Forgot Password */}
     <Text style={styles.forgotPasswordText}>Did you forget your password?</Text>
-      <TouchableOpacity onPress={() => navigation.navigate(MFAUserDashboard)}>
+      <TouchableOpacity onPress={() => navigation.navigate('MFAUserDashboard')}>
         <Text style={styles.resetPasswordText}>Tap here for reset</Text>
       </TouchableOpacity>
 

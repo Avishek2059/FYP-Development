@@ -10,11 +10,9 @@ import {
   MyFinancialAdvisorAccount,
   MFALoginScreen,
   MFACreateAccount,
-  MFADashboard,
   MFAUserDashboard,
   AddExpensesAndIncomesScreen,
-  ResetPasswordScreen,
-  Dashboard,
+  SqlQuery,
 } from './Source/screens'
 
 const Stack = createStackNavigator()
@@ -35,9 +33,9 @@ export default function App() {
           <Stack.Screen name="MyFinancialAdvisorAccount" component={MyFinancialAdvisorAccount} />
           <Stack.Screen name="MFALoginScreen" component={MFALoginScreen} />
           <Stack.Screen name="MFACreateAccount" component={ MFACreateAccount} />
-          <Stack.Screen name="MFADashboard" component={MFADashboard} />
           <Stack.Screen name="MFAUserDashboard" component={MFAUserDashboard} />
           <Stack.Screen name="AddExpensesAndIncomesScreen" component={AddExpensesAndIncomesScreen} />
+          <Stack.Screen name="SqlQuery" component={SqlQuery} />
           {/* <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
