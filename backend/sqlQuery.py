@@ -6,10 +6,6 @@ sqlQuery_bp = Blueprint('sqlQuery', __name__)
 @sqlQuery_bp.route('/sqlquery', methods=['POST'])
 def sqlQuery():
     try:
-        # data = request.get_json()
-        # if not data:
-        #     return jsonify({"message": "Invalid or missing JSON data"}), 400
-
         username = request.form.get('username')
         query = request.form.get('query')
 

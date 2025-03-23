@@ -54,10 +54,10 @@ export default function MFALoginScreen({ navigation }) {
       console.log("test1234"+e);
     }
     setLoading(true);
-    console.log(reqdata);
+    //console.log(reqdata);
 
     try {
-        console.log(API_URL);
+        //console.log(API_URL);
         const response = await fetch( API_URL, {
             method: 'POST',
             headers: {
@@ -66,7 +66,7 @@ export default function MFALoginScreen({ navigation }) {
             body: JSON.stringify(reqdata),
          });
         const data = await response.json();
-        console.log(data);
+        //console.log(data);
         
         // Check if the response was successful (status 200-299)
         if (response.ok && data.message === "Login successful") {
@@ -88,7 +88,7 @@ export default function MFALoginScreen({ navigation }) {
   }
     catch (error) {
         showToast(error.message || "Network error");
-        console.error('Error:', error);
+        //console.error('Error:', error);
     } finally {
         setLoading(false);
     }

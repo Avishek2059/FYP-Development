@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { set } from "react-hook-form";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from '@react-native-async-storage/async-storage';

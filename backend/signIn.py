@@ -22,7 +22,7 @@ def login():
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT * FROM Users WHERE username = %s", (username,))
         user = cursor.fetchone()
-        print(f"User fetched: {user}")  # Debug log
+        #print(f"User fetched: {user}")  # Debug log
         cursor.close()
         connection.close()
 

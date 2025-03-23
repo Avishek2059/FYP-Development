@@ -35,3 +35,6 @@ pytesseract
 google-generativeai
 python-dateutil
 mysql-connector-python
+joblib
+pandas
+scikit-learn

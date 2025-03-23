@@ -177,19 +177,7 @@ def convert_to_sql_date(date_str):
     
     return "0000-00-00"  # Default if no format matches
 
-# from datetime import datetime
 
-# def convert_to_sql_date(date_str):
-#     formats = ["%d/%m/%Y", "%m/%d/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d %b %Y", "%d %B %Y"]
-    
-#     for fmt in formats:
-#         try:
-#             # Convert string to a datetime object and return as a date object
-#             return datetime.strptime(date_str, fmt).date()
-#         except ValueError:
-#             continue
-    
-#     return None  # Return None if no format matches
 
 
 

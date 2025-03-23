@@ -13,6 +13,8 @@ import {
   MFAUserDashboard,
   AddExpensesAndIncomesScreen,
   SqlQuery,
+  Prediction,
+  ExpensesDetails,
 } from './Source/screens'
 
 const Stack = createStackNavigator()
@@ -36,6 +38,8 @@ export default function App() {
           <Stack.Screen name="MFAUserDashboard" component={MFAUserDashboard} />
           <Stack.Screen name="AddExpensesAndIncomesScreen" component={AddExpensesAndIncomesScreen} />
           <Stack.Screen name="SqlQuery" component={SqlQuery} />
+          <Stack.Screen name="Prediction" component={Prediction} />
+          <Stack.Screen name="ExpensesDetails" component={ExpensesDetails} />
           {/* <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
