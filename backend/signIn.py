@@ -33,11 +33,20 @@ def login():
         if verify_password(stored_hash, password):
             # session['username'] = user['username']
             # return jsonify({"message": "Login successful", "username": user['username']}), 200
+            # Construct the full image URL for the response
+            image_url = None
+            if user['profileImage']:
+                profile_image = user['profileImage']
+                image_url = profile_image.replace('\\', '/')
+                if not image_url.startswith('/'):
+                    image_url = f"/{image_url}" 
+
             session['user'] = {
             "username": user['username'],
             "fullName": user['fullName'],
             "email": user['email'],
-            "phone": user['phone']
+            "phone": user['phone'],
+            "profileImage": image_url
             }
             return jsonify({
                 "message": "Login successful",

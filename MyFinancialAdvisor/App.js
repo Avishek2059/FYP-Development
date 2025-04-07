@@ -15,6 +15,13 @@ import {
   SqlQuery,
   Prediction,
   ExpensesDetails,
+  Profile,
+  EditProfile,
+  AddIncome,
+  DeleteAccount,
+  ChangePassword,
+  UpdatePassword,
+  Recommendation,
 } from './Source/screens'
 
 const Stack = createStackNavigator()
@@ -40,12 +47,20 @@ export default function App() {
           <Stack.Screen name="SqlQuery" component={SqlQuery} />
           <Stack.Screen name="Prediction" component={Prediction} />
           <Stack.Screen name="ExpensesDetails" component={ExpensesDetails} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="AddIncome" component={AddIncome} />
+          <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
+          <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
+          <Stack.Screen name="Recommendation" component={Recommendation} />
           {/* <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}
           /> */}
-        </Stack.Navigator>
+        </Stack.Navigator>  
       </NavigationContainer>
+      
     </Provider>
   )
 }

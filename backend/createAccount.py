@@ -18,6 +18,7 @@ def register():
         phone = data.get('phone')
         username = data.get('username')
         password = data.get('password')
+        profileImage='null'
 
         # Validate required fields
         if not all([fullName, email, phone, username, password]):
@@ -43,10 +44,10 @@ def register():
 
         # Insert the new user into the database
         insert_query = """
-            INSERT INTO Users (fullName, email, phone, username, password) 
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO Users (fullName, email, phone, username, password, profileImage) 
+            VALUES (%s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(insert_query, (fullName, email, phone, username, hashed_password))
+        cursor.execute(insert_query, (fullName, email, phone, username, hashed_password,profileImage))
 
         # Commit the transaction
         connection.commit()

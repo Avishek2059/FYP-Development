@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   cardTitle: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   cardTitlecontainer: {

@@ -85,21 +85,27 @@ def clean_response(response, data_type):
 
         # Define category rules
         if any(keyword in issuer_lower for keyword in ["electricity", "water", "internet", "phone", "rent", "nea"]):
-            return "Housing & Utilities"
+            return "Housing"
         elif any(keyword in issuer_lower for keyword in ["restaurant", "cafe", "mart", "grocery", "food"]):
             return "Food"
         elif any(keyword in issuer_lower for keyword in ["school", "university", "bookstore", "tuition"]):
             return "Education"
         elif any(keyword in issuer_lower for keyword in ["clothing", "fashion", "apparel"]):
-            return "Clothing"
+            return "Shopping"
         elif any(keyword in issuer_lower for keyword in ["bus", "taxi", "train", "fuel", "transport"]):
-            return "Transportation"
+            return "Transport"
         elif any(keyword in issuer_lower for keyword in ["hospital", "clinic", "pharmacy", "medicine"]):
-            return "Healthcare & Medical"
+            return "Healthcare"
         elif any(keyword in issuer_lower for keyword in ["movie", "netflix", "entertainment", "subscription"]):
-            return "Entertainment & Leisure"
+            return "Entertainment"
+        elif any(keyword in issuer_lower for keyword in ["loan", "credit", "bank payment", "debt", "installment"]):
+            return "Debt Payments"
+        elif any(keyword in issuer_lower for keyword in ["savings", "investment", "bank deposit", "mutual fund", "stocks"]):
+            return "Savings/Investments"
+        elif any(keyword in issuer_lower for keyword in ["gift", "donation", "charity", "present"]):
+            return "Gifts & Donations"
         
-        return "Miscellaneous"  # Default category
+        return "Miscellaneous"
 
     # elif data_type == "bill_number" or data_type == "invoice_number":
     #     match = re.search(r"(bill|invoice)\s*(?:number|no)\s*is\s*([\w\d-]+)", response, re.IGNORECASE)

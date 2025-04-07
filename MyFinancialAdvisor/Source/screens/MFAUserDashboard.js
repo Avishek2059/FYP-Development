@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,30 +8,63 @@ import {
   TextInput,
   ScrollView,
   Dimensions,
+  Modal,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons"; // Using Expo icons for simplicity
-import Svg, {
-  Path,
-} from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DashboardSecondComp from "../components/DashboardSecondComp";
 import IncomeExpCard from "../components/IncomeExpCard";
 import TodayComp from "../components/TodayComp";
 import ExpensesGraph from "../components/ExpensesGraph";
+import CategoryExpenses from "../components/CategoryExpenses";
+import FloatingActionButton from "../components/FloatingActionButton";
+//import { useFocusEffect } from "@react-navigation/native";
+
+import WeeklyStats from "../components/WeeklyStats";
+import getLocalIP from "../../config";
+
+import { useFocusEffect } from "@react-navigation/native";
+
+import DrawerContent from "./DrawerContent";
+
+let API_URL = "";
+let localIPS = "";
+
+// Function to set up the API URL
+const setupAPI = async () => {
+  const localIP = await getLocalIP();
+  localIPS = localIP;
+  API_URL = `${localIP}/login`; // Set the global variable
+  //console.log("API URL Set:", localIPS);
+};
+
+// Call the function once to set the API URL
+setupAPI();
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function MFAUserDashboard({ navigation }) {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+  const handleDrawerPress = (e) => {
+    // Prevent the event from bubbling up to the overlay
+    e.stopPropagation();
+  };
 
   const [userData, setUserData] = useState({
     username: "",
     fullName: "",
     email: "",
     phone: "",
+    profileImage: "",
   });
-
+  //console.log(userData.profileImage)
   // Function to get user data from AsyncStorage
   const getUserData = async () => {
     try {
@@ -46,10 +79,12 @@ export default function MFAUserDashboard({ navigation }) {
     }
   };
 
-  // Use useEffect to fetch data when component mounts
-  useEffect(() => {
-    getUserData();
-  }, []);
+  // Reload data when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      getUserData(); // Fetch the latest user data when the screen is focused
+    }, [])
+  );
 
   const fullName = userData.fullName; // Destructure fullName from userData
 
@@ -59,15 +94,26 @@ export default function MFAUserDashboard({ navigation }) {
 
   const firstName = getFirstName(fullName); // Extract first name
 
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         {/* Profile Image on the Left */}
-        <Image
-          source={require("../assets/Avishek Chaudhary.jpg")}
-          style={styles.profileImage}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <Image
+            source={{
+              uri: userData.profileImage
+                ? `${localIPS}${userData.profileImage}`
+                : `${localIPS}/uploads/profile_images/Avishek Chaudhary.JPG`,
+            }}
+            //source={require("../assets/Avishek Chaudhary.jpg")}
+            style={styles.profileImage}
+            onError={(error) =>
+              console.log("Image load error:", error.nativeEvent.error)
+            }
+          />
+        </TouchableOpacity>
         <Text style={[styles.usertitle, { fontSize: 24 }]}>{firstName}</Text>
 
         {/* Middle Space for Search Bar or Empty Space */}
@@ -98,11 +144,37 @@ export default function MFAUserDashboard({ navigation }) {
           <TouchableOpacity>
             <MaterialIcons name="notifications" size={28} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={toggleDrawer}>
             <MaterialIcons name="menu" size={28} color="black" />
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Custom Drawer */}
+      <Modal
+        visible={isDrawerOpen}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={toggleDrawer}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={toggleDrawer} // Closes drawer when clicking outside
+        >
+          <View
+            style={styles.drawerContainer}
+            onStartShouldSetResponder={() => true} // Enable responder
+            onResponderGrant={handleDrawerPress} // Stop propagation
+          >
+            <DrawerContent
+              navigation={navigation}
+              toggleDrawer={() => setIsDrawerOpen(false)}
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
       <ScrollView
         showsVerticalScrollIndicator={false} // Hides the vertical scroll bar
         contentContainerStyle={{ flexGrow: 1 }}
@@ -123,7 +195,17 @@ export default function MFAUserDashboard({ navigation }) {
 
         <ExpensesGraph />
 
+        {/* Weekely Stats Figures */}
+
+        <WeeklyStats />
+
+        <CategoryExpenses />
       </ScrollView>
+
+      <FloatingActionButton
+        navigation={navigation}
+        toggleDrawer={() => setIsDrawerOpen(false)}
+      />
 
       {/* Curved Background with Camera Placeholder */}
       <View style={styles.navBarContainer}>
@@ -294,5 +376,16 @@ const styles = StyleSheet.create({
   usertitle: {
     fontWeight: "bold",
     paddingLeft: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  drawerContainer: {
+    width: 320,
+    height: "100%",
+    backgroundColor: "#fff",
   },
 });

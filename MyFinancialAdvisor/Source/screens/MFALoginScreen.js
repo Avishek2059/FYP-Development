@@ -70,12 +70,12 @@ export default function MFALoginScreen({ navigation }) {
         
         // Check if the response was successful (status 200-299)
         if (response.ok && data.message === "Login successful") {
-          const { username, fullName, email, phone } = data.user; // Extract all user details
+          const { username, fullName, email, phone, profileImage } = data.user; // Extract all user details
 
           // Store user session in AsyncStorage
           await AsyncStorage.setItem(
             "userSession",
-            JSON.stringify({ username, fullName, email, phone })
+            JSON.stringify({ username, fullName, email, phone, profileImage })
           );
           // Navigate to dashboard with user data
           //navigation.replace('MFAUserDashboard', { username, fullName, email, phone });

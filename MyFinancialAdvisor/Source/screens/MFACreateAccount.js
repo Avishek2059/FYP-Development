@@ -14,6 +14,8 @@ const setupAPI = async () => {
   console.log("API URL Set:", API_URL);
 };
 
+setupAPI()
+
 
 export default function MFACreateAccount({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);

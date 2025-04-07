@@ -183,48 +183,13 @@ export default function ExpensesGraph() {
               marginVertical: 8,
               borderRadius: 10,
               backgroundColor: "#F8EEE5",
+              marginLeft:-8,
             }}
             formatYLabel={(value) => {
               if (value >= 1000) {
                 return `${value / 1000}k`; // Format as 1k, 2k, etc.
               }
               return value.toString();
-            }}
-            withDots={true}
-            // Custom tooltip
-            decorator={() => {
-              const currentMonthIndex = chartData.currentMonth;
-              const expensesValue = chartData.expenses[currentMonthIndex];
-              const savingsValue = chartData.savings[currentMonthIndex];
-              const maxValue = Math.max(expensesValue, savingsValue);
-              if (maxValue === 0) return null;
-
-              const xPosition = (currentMonthIndex + 0.5) * ((Dimensions.get("window").width - 40) / 12);
-              const yPosition = (1 - (maxValue / 100000)) * 220; // Adjust based on chart height and max value
-
-              return (
-                <View
-                  style={{
-                    position: 'absolute',
-                    left: xPosition - 50,
-                    top: yPosition - 30,
-                    backgroundColor: '#fff',
-                    padding: 5,
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3,
-                    elevation: 5,
-                  }}
-                >
-                  <Text style={{ fontSize: 12, color: '#000' }}>
-                    {`\u0930\u0941${Math.round(maxValue)} ${months[currentMonthIndex]}`}
-                  </Text>
-                </View>
-              );
             }}
           />
         )}
@@ -240,7 +205,7 @@ const styles = StyleSheet.create({
   },
   expensescontainer: {
     marginTop: 25,
-    marginBottom: 100,
+    //marginBottom: 100,
     padding: 10,
     backgroundColor: "#FEDDDD",
     borderRadius: 16,
