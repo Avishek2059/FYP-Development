@@ -205,12 +205,12 @@ const DrawerContent = ({ navigation, toggleDrawer }) => {
           </View>
         )}
         <DrawerItem
-          label="Location"
+          label="Set Budget"
           labelStyle={styles.menuLabel}
           icon={({ color, size }) => (
-            <Icon name="map-marker-outline" size={size} color="#000" />
+            <Icon name="cash" size={size} color="#000" />
           )}
-          onPress={() => navigation.navigate("Location")}
+          onPress={() => navigation.navigate("SetBudget")}
         />
         <DrawerItem
           label="Predict"

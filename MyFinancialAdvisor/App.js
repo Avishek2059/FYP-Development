@@ -22,6 +22,10 @@ import {
   ChangePassword,
   UpdatePassword,
   Recommendation,
+  ForgetPassword,
+  ValidateOTP,
+  ResetPassword,
+  SetBudget
 } from './Source/screens'
 
 const Stack = createStackNavigator()
@@ -54,6 +58,10 @@ export default function App() {
           <Stack.Screen name="ChangePassword" component={ChangePassword} />
           <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
           <Stack.Screen name="Recommendation" component={Recommendation} />
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+          <Stack.Screen name="ValidateOTP" component={ValidateOTP} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          <Stack.Screen name="SetBudget" component={SetBudget} />
           {/* <Stack.Screen
             name="ResetPasswordScreen"
             component={ResetPasswordScreen}

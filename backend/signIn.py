@@ -12,6 +12,7 @@ def login():
 
         username = data.get('username')
         password = data.get('password')
+        print(f"Received data: {data}")  # Debug log
         if not username or not password:
             return jsonify({"error": "Missing required fields"}), 400
 
@@ -20,20 +21,24 @@ def login():
             return jsonify({"error": "Database connection failed"}), 500
 
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Users WHERE username = %s", (username,))
+        #cursor.execute("SELECT * FROM Users WHERE username = %s", (username,))
+        cursor.execute("SELECT * FROM Users WHERE username = %s OR email = %s", (username, username))
         user = cursor.fetchone()
         #print(f"User fetched: {user}")  # Debug log
         cursor.close()
         connection.close()
+        print(f"Received data: {data}")  # Debug log
 
         if not user:
-            return jsonify({"error": "user with this username not found"}), 401
+            return jsonify({"error": "user with this username or email not found"}), 401
+        
+        if user['isVerifide'] == 'unverified':
+            return jsonify({"error": "Account not verified"}), 403
+        elif user['isVerifide'] == 'declined':
+            return jsonify({"error": "Account declined"}), 403
 
         stored_hash = user['password']
         if verify_password(stored_hash, password):
-            # session['username'] = user['username']
-            # return jsonify({"message": "Login successful", "username": user['username']}), 200
-            # Construct the full image URL for the response
             image_url = None
             if user['profileImage']:
                 profile_image = user['profileImage']
@@ -53,7 +58,7 @@ def login():
                 "user": session['user']
             }), 200
         else:
-            return jsonify({"error": "Email or Password do not match"}), 401
+            return jsonify({"error": "Password do not match"}), 401
 
     except Exception as e:
         print(f"Exception: {str(e)}")  # Debug log

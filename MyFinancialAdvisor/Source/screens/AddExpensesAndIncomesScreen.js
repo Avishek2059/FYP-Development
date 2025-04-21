@@ -241,7 +241,7 @@ return (
       <View style={styles.headerContainer}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("MFAUserDashboard")}
         >
           <Image
             source={require("../assets/arrow_back.png")} // Replace with your back arrow image

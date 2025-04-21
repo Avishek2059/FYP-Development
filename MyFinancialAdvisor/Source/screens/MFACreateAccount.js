@@ -11,7 +11,7 @@ let API_URL = "";
 const setupAPI = async () => {
   const localIP = await getLocalIP();
   API_URL = `${localIP}/register`; // Set the global variable
-  console.log("API URL Set:", API_URL);
+  //console.log("API URL Set:", API_URL);
 };
 
 setupAPI()

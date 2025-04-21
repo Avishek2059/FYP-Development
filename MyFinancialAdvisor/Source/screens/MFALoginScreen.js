@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import Header from '../components/Header'
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { useForm, Controller } from "react-hook-form";
+import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //import MFAUserDashboard from './MFAUserDashboard';
 import getLocalIP from '../../config';
@@ -21,7 +22,8 @@ setupAPI();
 export default function MFALoginScreen({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading,setLoading] = useState(false);
-    const showToast = (message, type = 'error') => {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const showToast = (message, type = 'error') => {
       Toast.show({
         type, // 'success' or 'error'
         text2: message,
@@ -66,7 +68,7 @@ export default function MFALoginScreen({ navigation }) {
             body: JSON.stringify(reqdata),
          });
         const data = await response.json();
-        //console.log(data);
+        console.log(data);
         
         // Check if the response was successful (status 200-299)
         if (response.ok && data.message === "Login successful") {
@@ -82,12 +84,12 @@ export default function MFALoginScreen({ navigation }) {
           navigation.replace('MFAUserDashboard');
 
       } else {
-          // Handle error messages from API
-          Alert.alert("Error", data.error || "Email or Password do not match.");
+        console.log(data.error);
+        setErrorMessage(data.error || "An error occurred");
       }
   }
     catch (error) {
-        showToast(error.message || "Network error");
+      setErrorMessage(error.message || "Network error");
         //console.error('Error:', error);
     } finally {
         setLoading(false);
@@ -121,24 +123,12 @@ export default function MFALoginScreen({ navigation }) {
       <Controller
         control={control}
         rules={{
-          required: "Username is required", // Ensures the username is not empty
-          minLength: {
-            value: 3, // Ensures the username is at least 3 characters long
-            message: "Username must be at least 3 characters", // Error message if the username is too short
-          },
-          maxLength: {
-            value: 15, // Ensures the username does not exceed 15 characters
-            message: "Username cannot exceed 15 characters", // Error message if the username is too long
-          },
-          pattern: {
-            value: /^[a-zA-Z0-9_]+$/, // Validates that the username contains only letters, numbers, and underscores
-            message: "Username can only contain letters, numbers, and underscores",
-          },
+          required: "Username or email is required", // Ensures the username is not empty
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder="Username or Email"
             placeholderTextColor="#C4C4C4"
             onBlur={onBlur} // Trigger validation on blur
             onChangeText={onChange} // Update value in form state
@@ -214,9 +204,13 @@ export default function MFALoginScreen({ navigation }) {
 
     {/* Forgot Password */}
     <Text style={styles.forgotPasswordText}>Did you forget your password?</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('MFAUserDashboard')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
         <Text style={styles.resetPasswordText}>Tap here for reset</Text>
       </TouchableOpacity>
+
+      {errorMessage && (
+        <Text style={styles.errorTexts}>{errorMessage}</Text> // Show error message if login fails
+      )}
 
     
   </View>
@@ -333,6 +327,13 @@ const styles = StyleSheet.create({
     color: 'red',
     zIndex: 1001,
     marginTop: -40,
+    marginBottom: 20,
+  },
+
+  errorTexts: {
+    color: 'red',
+    zIndex: 1001,
+    marginTop: 10,
     marginBottom: 20,
   },
 });
