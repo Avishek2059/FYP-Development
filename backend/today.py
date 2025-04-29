@@ -7,9 +7,9 @@ today_stats_bp = Blueprint('today_stats', __name__)
 @today_stats_bp.route('/todaystats', methods=['POST'])
 def get_today_stats():
     """
-    Endpoint to get today's expenses and income for a user.
-    Expects form data with 'username' field in the request body.
-    Returns JSON with today's total expenses, income, and progress percentages.
+    Endpoint to compare grocery budget vs expenses for a user.
+    Expects form data with 'username' and optional 'period' ('weekly' or 'monthly').
+    Returns JSON with budget, expenses, and alert message for the grocery category.
     """
     try:
         # Get username from form data

@@ -134,14 +134,3 @@ def expensesincomeimage():
     except Exception as e:
         print(f"Error: {str(e)}")  # Add logging for debugging
         return jsonify({'error': f'Failed to process image: {str(e)}'}), 500
-    
-    # Extract required information from the extracted text
-    #requiredInfo = extract_required_info(extractedText)
-
-    #print(requiredInfo)
-
-    #image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    #image.save(image_path)
-
-    #return jsonify({'message': 'Image uploaded successfully', 'image_url': image_path}), 200
-    return jsonify({'message': 'Image uploaded successfully'}), 200

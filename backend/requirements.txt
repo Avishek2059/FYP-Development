@@ -11,9 +11,17 @@
 # install dependicies as
 #>> pip install -r requirement.txt
 
+# git account authentication
+#>> git config --global user.name "your_username"
+#>> git config --global user.email "
+
+# Initialize a git repository
+#>> git init
+
 # git repository
 #>> git add .
 #>> git commit -m "commit message"
+#>> git remote add origin "htpps://github.com/your_username/your_repository.git" Note: only for the first time
 #>> git push -u origin main
 
 # steup files

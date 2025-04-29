@@ -37,20 +37,24 @@ def register():
         cursor = connection.cursor()
 
         # Check if username already exists
-        cursor.execute("SELECT * FROM Users WHERE username = %s", (username,))
+        # Check if username or email already exists
+        cursor.execute("SELECT * FROM Users WHERE username = %s OR email = %s", (username, email))
+
         user = cursor.fetchone()
     
         if user:
             cursor.close()
             connection.close()
             
-            # Determine which field is duplicated
+            print(email)
+            print(user[1])
             if user[3] == username:  # assuming username is in the 4th column
                 return jsonify({"message": "Username already taken"}), 400
             elif user[1] == email:  # assuming email is in the 2nd column
                 return jsonify({"message": "Email already registered"}), 400
-            else:
-                return jsonify({"message": "Username or Email already in use"}), 400
+            
+            # Determine which field is duplicated
+            
 
         # Send verification email to admin
         if not send_verification_email_to_admin( username, email):

@@ -66,6 +66,24 @@ def send_password_reset_otp():
         if not email:
             return jsonify({"error": "Email is required"}), 400
         
+        # Open database connection
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({"message": "Database connection failed"}), 500
+
+        cursor = connection.cursor()
+
+        # Check if username already exists
+        # Check if username or email already exists
+        cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
+
+        user = cursor.fetchone()
+        print(f"User found: {user}")
+    
+        if not user:
+            # assuming email is in the 2nd column
+            return jsonify({"message": "User with this email not foud"}), 400
+        
         Global_email= email
         
         # Generate a 5-digit OTP

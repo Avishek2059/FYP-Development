@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   Modal,
+  Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons"; // Using Expo icons for simplicity
 import Svg, { Path } from "react-native-svg";
@@ -35,7 +36,7 @@ let localIPS = "";
 const setupAPI = async () => {
   const localIP = await getLocalIP();
   localIPS = localIP;
-  API_URL = `${localIP}/login`; // Set the global variable
+  API_URL = `${localIP}/budgetAlert`; // Set the global variable
   //console.log("API URL Set:", localIPS);
 };
 
@@ -93,6 +94,68 @@ export default function MFAUserDashboard({ navigation }) {
   };
 
   const firstName = getFirstName(fullName); // Extract first name
+  //const username = userData.username; // Destructure username from userData
+
+ 
+  const [alerts, setAlerts] = useState([]);
+  const [dismissedCategories, setDismissedCategories] = useState(new Set());
+
+  // Function to fetch alerts from the backend
+  const fetchAlerts = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('username', userData.username); // Replace with actual username from auth
+      console.log("Fetching alerts for username:", userData.username);
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json(); // Parse JSON
+
+      if (data.status === 'success') {
+        setAlerts(data.data);
+        setDismissedCategories(new Set()); // Reset dismissed categories on fetch
+      } else {
+        Alert.alert('Error', data.error || 'Failed to fetch budget alerts');
+        console.error('Error fetching alerts:', data.error);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch budget alerts: ' + error.message);
+      console.error('Error fetching alerts:', error);
+    }
+  };
+
+  // Fetch alerts on component mount (simulating login)
+  useEffect(() => {
+    if (userData?.username) {
+      fetchAlerts();
+    }
+  }, [userData]);
+
+
+  // Show alerts one by one as native Alert pop-ups
+  useEffect(() => {
+    if (alerts.length > 0) {
+      const nextAlert = alerts.find((alert) => !dismissedCategories.has(alert.category));
+      if (nextAlert) {
+        Alert.alert(
+          'Budget Alert',
+          nextAlert.alert,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                setDismissedCategories((prev) => new Set(prev).add(nextAlert.category));
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+    }
+  }, [alerts, dismissedCategories]);
 
 
   return (

@@ -12,7 +12,7 @@ export default function ThirdStartScreen({ navigation }) {
     <Image source={require('../assets/thirdstart.png')} style={[styles.logo]} />
     <Image source={require('../assets/star.png')} style={[styles.stars]} />
     {/* <Logo style={styles.logo} /> */}
-    <Header style={styles.header}>Grow{'\n'}Ecominically,{'\n'}Statically</Header>
+    <Header style={styles.header}>Grow{'\n'}Economically,{'\n'}Statistically</Header>
     <Button
     style={styles.button}
     mode="contained"

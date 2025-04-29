@@ -27,6 +27,7 @@ from changePassword import changepassword_bp
 from Recommendation import recommendation_bp
 from ForgetPassword import password_reset_bp
 from budget import budget_bp
+from budgetAlert import budgetAlert_bp
 
 
 # Initialize Flask app
@@ -59,6 +60,7 @@ app.register_blueprint(changepassword_bp)
 app.register_blueprint(recommendation_bp)
 app.register_blueprint(password_reset_bp)
 app.register_blueprint(budget_bp)
+app.register_blueprint(budgetAlert_bp)
 
 
 # Serve the 'uploads' folder as a static directory

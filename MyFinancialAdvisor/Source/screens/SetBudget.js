@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
+import getLocalIP from "../../config";
+
+
+
+let API_URL = "";
+let localIPS = "";
+
+// Function to set up the API URL
+const setupAPI = async () => {
+  const localIP = await getLocalIP();
+  localIPS = localIP;
+  API_URL = `${localIP}/set_budget`; // Set the global variable
+  //console.log("API URL Set:", localIPS);
+};
+
+// Call the function once to set the API URL
+setupAPI();
 
 export default function SetBudget({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -79,27 +96,44 @@ export default function SetBudget({ navigation }) {
 
     try {
       // Mock API call or AsyncStorage save
-      const budgetData = {
-        category: selectedCategory,
-        period: selectedPeriod,
-        amount: parseFloat(budgetAmount),
-        user: userData.username,
-        timestamp: new Date().toISOString(),
-      };
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('username', userData.username);
+      formData.append('category', selectedCategory);
+      formData.append('period', selectedPeriod);
+      formData.append('amount', parseFloat(budgetAmount).toString());
 
-      // Save to AsyncStorage (or replace with actual API call)
-      await AsyncStorage.setItem(`budget_${userData.username}_${selectedCategory}_${selectedPeriod}`, JSON.stringify(budgetData));
-      
-      setResponse({
-        message: `Budget of ${budgetAmount} set for ${selectedCategory} for ${selectedPeriod}`,
+      // Make API call
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: formData,
       });
-      
-      // Clear inputs
-      setBudgetAmount('');
-      setSelectedCategory(null);
-      setSelectedPeriod(null);
+
+      const data = await response.json();
+      console.log("Response from server:", data); // Log the response for debugging
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! Status: ${response.status}`);
+      }
+      Alert.alert('Success', data.message);
+      if (data.message) {
+        // Show success alert
+        
+        console.log("Budget set successfully:", data.budget);
+        setResponse({ message: data.message });
+
+        // Clear inputs
+        setBudgetAmount('');
+        setSelectedCategory(null);
+        setSelectedPeriod(null);
+      } else {
+        throw new Error('Unexpected response from server');
+      }
     } catch (error) {
-      setError('Error setting budget: ' + error.message);
+      const errorMsg = 'Error setting budget: ' + error.message;
+      Alert.alert('Error', errorMsg);
+      setError(errorMsg);
+      console.error('Error setting budget:', error);
     } finally {
       setLoading(false);
     }

@@ -43,10 +43,6 @@ def delete_account():
             cursor.execute(delete_query, (username,))
             connection.commit()
 
-            
-
-
-
             return jsonify({"message": "Account deleted successfully"}), 200
 
         else: 

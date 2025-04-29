@@ -9,7 +9,7 @@ budget_bp = Blueprint('budget', __name__)
 @budget_bp.route('/set_budget', methods=['POST'])
 def set_budget():
     try:
-        data = request.get_json()
+        data = request.form
 
         # Validate required fields
         required_fields = ['username', 'category', 'period', 'amount']
@@ -35,31 +35,72 @@ def set_budget():
         except ValueError:
             return jsonify({'error': 'Amount must be a positive number'}), 400
 
-        # Insert into database
+        # Database connection
         connection = get_db_connection()
         if not connection:
             return jsonify({"message": "Database connection failed"}), 500
 
         cursor = connection.cursor()
-        query = "INSERT INTO budget (username, category, period, amount) VALUES (%s, %s, %s, %s)"
-        cursor.execute(query, (username, category, period, amount))
-        connection.commit()
 
-        # Get the ID of the inserted row
-        budget_id = cursor.lastrowid
-        cursor.close()
-        connection.close()
+        # Check for existing budget
+        query_check = """
+            SELECT id, amount
+            FROM budget
+            WHERE username = %s AND category = %s AND period = %s
+        """
+        cursor.execute(query_check, (username, category, period))
+        existing_budget = cursor.fetchone()
 
-        return jsonify({
-            'message': f'Budget of {amount} set for {category} {period}',
-            'budget': {
-                'id': budget_id,
-                'username': username,
-                'category': category,
-                'period': period,
-                'amount': amount
-            }
-        }), 201
+        if existing_budget:
+            # Update existing budget
+            budget_id = existing_budget[0]
+            current_amount = float(existing_budget[1])
+            new_amount = current_amount + amount
+
+            query_update = """
+                UPDATE budget
+                SET amount = %s
+                WHERE id = %s
+            """
+            cursor.execute(query_update, (new_amount, budget_id))
+            connection.commit()
+
+            cursor.close()
+            connection.close()
+
+            return jsonify({
+                'message': f'Budget for {category} {period} updated. New amount: ${new_amount:.2f}',
+                'budget': {
+                    'id': budget_id,
+                    'username': username,
+                    'category': category,
+                    'period': period,
+                    'amount': new_amount
+                }
+            }), 200
+        else:
+            # Insert new budget
+            query_insert = """
+                INSERT INTO budget (username, category, period, amount)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(query_insert, (username, category, period, amount))
+            connection.commit()
+
+            budget_id = cursor.lastrowid
+            cursor.close()
+            connection.close()
+
+            return jsonify({
+                'message': f'Budget of ${amount:.2f} set for {category} {period}',
+                'budget': {
+                    'id': budget_id,
+                    'username': username,
+                    'category': category,
+                    'period': period,
+                    'amount': amount
+                }
+            }), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

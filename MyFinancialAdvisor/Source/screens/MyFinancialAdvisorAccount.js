@@ -33,13 +33,13 @@ export default function MyFinancialAdvisorAccount({ navigation }) {
     </Button>
 
     {/* Sign in with Google */}
-    <Button
+    {/* <Button
     style={[styles.button, styles.googleButton]} 
     onPress={() => console.log('Sign in with Google')}
     >
       <Image source={require('../assets/google.png')} style={styles.googleIcon} />
       <Text style={styles.googleText}>   Sign In with Google</Text>
-    </Button>
+    </Button> */}
     
 
     
